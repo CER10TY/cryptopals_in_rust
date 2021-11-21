@@ -94,7 +94,7 @@ mod tests {
         for scorer in best_scorers.iter() {
             let score = crate::score_plaintext(&scorer);
             if score > 0.0 {
-                if score > high_score {
+                if score >= high_score {
                     best_score = scorer;
                     high_score = score;
                 }
