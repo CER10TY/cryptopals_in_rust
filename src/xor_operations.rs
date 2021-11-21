@@ -23,7 +23,7 @@ pub fn xor_single_character(bytes: &Vec<u8>, key: &u8) -> Vec<u8> {
 }
 
 #[allow(dead_code)]
-pub fn score_single_byte_xor_cipher(bytes: &Vec<u8>) ->Vec<u8> {
+pub fn score_single_byte_xor_cipher(bytes: &Vec<u8>) -> Vec<u8> {
     let mut best_scoring_vec: Vec<u8> = Vec::new();
     let mut high_score: f32 = 0.0;
 
@@ -40,6 +40,21 @@ pub fn score_single_byte_xor_cipher(bytes: &Vec<u8>) ->Vec<u8> {
     }
 
     best_scoring_vec
+}
+
+#[allow(dead_code)]
+pub fn repeating_key_xor(bytes: &Vec<u8>, key: &Vec<u8>) -> Vec<u8> {
+    let mut encrypted: Vec<u8> = Vec::new();
+
+    let key_length: usize = key.len();
+
+    for (index, _) in bytes.iter().enumerate() {
+        // Modulo iterates perfectly through the key - if Index == Key Length, Index % Key Length = 0
+        let key_byte: u8 = key[index % key_length];
+        encrypted.push(bytes[index] ^ key_byte);
+    }
+
+    encrypted
 }
 
 #[cfg(test)]
@@ -104,5 +119,16 @@ mod tests {
 
         // And finally, the best looking string gets put into assert_eq to make the test look good
         assert_eq!(String::from_utf8_lossy(&best_score), "nOW\u{0}THAT\u{0}THE\u{0}PARTY\u{0}IS\u{0}JUMPING*");
+    }
+
+    #[test]
+    fn test_repeating_key_xor() {
+        // Have to make sure that \n is put in manually, since otherwise \r or something might sneak in
+        let stanza: Vec<u8> = String::as_bytes(&"Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal".to_string()).to_vec();
+        let key: Vec<u8> = String::as_bytes(&"ICE".to_string()).to_vec();
+
+        let encrypted: Vec<u8> = repeating_key_xor(&stanza, &key);
+
+        assert_eq!(crate::hex_operations::bytes_to_hex(&encrypted), "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f");
     }
 }
