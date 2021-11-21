@@ -1,14 +1,17 @@
 use hex::FromHex;
 use base64::encode;
 
+#[allow(dead_code)]
 pub fn hex_to_bytes(hex: &str) -> Vec<u8> {
     Vec::from_hex(hex).expect("Invalid hex string!")
 }
 
+#[allow(dead_code)]
 pub fn bytes_to_base64(bytes: &Vec<u8>) -> String {
     encode(bytes)
 }
 
+#[allow(dead_code)]
 pub fn bytes_to_hex(bytes: &Vec<u8>) -> String {
     hex::encode(bytes)
 }

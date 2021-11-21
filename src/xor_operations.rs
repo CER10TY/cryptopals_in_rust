@@ -1,6 +1,5 @@
-use std::collections::BTreeMap;
-
 // This is the fixed XOR function, where two equal-length buffers are XORed against each other char-by-char to return a new byte combination
+#[allow(dead_code)]
 pub fn xor_each(byte_one: &Vec<u8>, byte_two: &Vec<u8>) -> Vec<u8> {
     let mut xor_ed: Vec<u8> = Vec::new();
 
@@ -12,6 +11,7 @@ pub fn xor_each(byte_one: &Vec<u8>, byte_two: &Vec<u8>) -> Vec<u8> {
 }
 
 // Here, instead, we use a single character out of the Vec<u8> to act as the key for the bit-wise XOR operation
+#[allow(dead_code)]
 pub fn xor_single_character(bytes: &Vec<u8>, key: &u8) -> Vec<u8> {
     let mut xor_ed: Vec<u8> = Vec::new();
 
@@ -22,6 +22,7 @@ pub fn xor_single_character(bytes: &Vec<u8>, key: &u8) -> Vec<u8> {
     xor_ed
 }
 
+#[allow(dead_code)]
 pub fn score_single_byte_xor_cipher(bytes: &Vec<u8>) ->Vec<u8> {
     let mut best_scoring_vec: Vec<u8> = Vec::new();
     let mut high_score: f32 = 0.0;
