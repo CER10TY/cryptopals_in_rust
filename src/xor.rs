@@ -1,5 +1,6 @@
 use std::collections::BTreeMap;
 
+// This is the fixed XOR function, where two equal-length buffers are XORed against each other char-by-char to return a new byte combination
 pub fn xor_each(byte_one: &Vec<u8>, byte_two: &Vec<u8>) -> Vec<u8> {
     let mut xor_ed: Vec<u8> = Vec::new();
 
@@ -10,6 +11,7 @@ pub fn xor_each(byte_one: &Vec<u8>, byte_two: &Vec<u8>) -> Vec<u8> {
     xor_ed
 }
 
+// Here, instead, we use a single character out of the Vec<u8> to act as the key for the bit-wise XOR operation
 pub fn xor_single_character(bytes: &Vec<u8>, key: &u8) -> Vec<u8> {
     let mut xor_ed: Vec<u8> = Vec::new();
 
@@ -20,7 +22,7 @@ pub fn xor_single_character(bytes: &Vec<u8>, key: &u8) -> Vec<u8> {
     xor_ed
 }
 
-pub fn single_byte_xor_cipher(bytes: &Vec<u8>) -> BTreeMap<Vec<u8>, f32> {
+pub fn score_single_byte_xor_cipher(bytes: &Vec<u8>) -> BTreeMap<Vec<u8>, f32> {
     let mut score_map: BTreeMap<Vec<u8>, f32> = BTreeMap::new();
 
     for byte in bytes.iter() {
@@ -50,7 +52,7 @@ mod tests {
     #[test]
     fn test_single_byte_xor_cipher() {
         let bytes: Vec<u8> = crate::hex_operations::hex_to_bytes("1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736");
-        let map: BTreeMap<Vec<u8>, f32> = single_byte_xor_cipher(&bytes);
+        let map: BTreeMap<Vec<u8>, f32> = score_single_byte_xor_cipher(&bytes);
 
         let mut top_two: Vec<&Vec<u8>> = Vec::new();
         let previous_score: f32 = 0.0;
@@ -67,6 +69,8 @@ mod tests {
         }
         
         assert_eq!(String::from_utf8_lossy(top_two[0]), "dHHLNI@\u{7}jd\u{0}T\u{7}KNLB\u{7}F\u{7}WHRIC\u{7}HA\u{7}EFDHI");
+
+        // Here, the shortcomings of "simple" character frequency scoring shine, as the most legible text ends up on second place because it uses '
         assert_eq!(String::from_utf8_lossy(top_two[1]), "cOOKING\u{0}mc\u{7}S\u{0}LIKE\u{0}A\u{0}POUND\u{0}OF\u{0}BACON");
     }
 }

@@ -12,6 +12,7 @@ pub fn score_plaintext(bytes: Vec<u8>) -> f32 {
 
     // Reference: https://www3.nd.edu/~busiforc/handouts/cryptography/Letter%20Frequencies.html
     let english_character_frequency = BTreeMap::from([
+        // The space is a bit of a cheat, as it's not a legitimate character per se and certainly not at the top of the list
         (" ", 0.13),
         ("e", 0.12702),
         ("t", 0.09056),
@@ -41,7 +42,8 @@ pub fn score_plaintext(bytes: Vec<u8>) -> f32 {
         ("z", 0.00074)
     ]);
     
-
+    // For the Cryptopals challenges, only ASCII characters are used (in the legible text anyway)
+    // However, chars() uses unicode _points_ instead of full _characters_, so working with Grapheme Clusters is usually a safer bet in regards to UTF-8 compatibility
     let ciphertext = String::from_utf8(bytes).unwrap();
     for c in ciphertext.graphemes(true) {
         match english_character_frequency.get(c) {
