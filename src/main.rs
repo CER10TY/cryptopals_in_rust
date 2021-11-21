@@ -48,7 +48,7 @@ pub fn score_plaintext(bytes: Vec<u8>) -> f32 {
     for c in ciphertext.graphemes(true) {
         // Incredibly important but slightly cumbersome to make this all _lowercase_. Specifically, challenge 3 features a majority of upper case characters that are NOT rated
         match english_character_frequency.get(&c.to_ascii_lowercase().as_str()) {
-            Some(score) => plaintext_score += score * 100.0,
+            Some(score) => plaintext_score += score,
             None => {}
         }
     }

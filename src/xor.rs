@@ -59,7 +59,9 @@ mod tests {
     fn test_single_byte_xor_cipher() {
         let bytes: Vec<u8> = crate::hex_operations::hex_to_bytes("1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736");
         let best_scoring_vec: Vec<u8> = score_single_byte_xor_cipher(&bytes);
-
+        
+        // The "valid" string was found by outputting a list of all strings with a score of > 0.0, and then manually looking at the most legible string
+        // So really, this is just a way to encapuslate Challenge 3 and make it look good, but in a real scenario this would be manual work
         assert_eq!(String::from_utf8_lossy(&best_scoring_vec), "cOOKING\u{0}mc\u{7}S\u{0}LIKE\u{0}A\u{0}POUND\u{0}OF\u{0}BACON");
     }
 }
