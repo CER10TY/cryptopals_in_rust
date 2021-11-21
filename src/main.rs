@@ -1,4 +1,4 @@
-mod xor;
+mod xor_operations;
 mod hex_operations;
 use std::collections::BTreeMap;
 use unicode_segmentation::UnicodeSegmentation;
@@ -7,7 +7,7 @@ fn main() {
     println!("Hello World!");
 }
 
-pub fn score_plaintext(bytes: Vec<u8>) -> f32 {
+pub fn score_plaintext(bytes: &Vec<u8>) -> f32 {
     let mut plaintext_score: f32 = 0.0;
 
     // Reference: https://www3.nd.edu/~busiforc/handouts/cryptography/Letter%20Frequencies.html
@@ -44,7 +44,9 @@ pub fn score_plaintext(bytes: Vec<u8>) -> f32 {
     
     // For the Cryptopals challenges, only ASCII characters are used (in the legible text anyway)
     // However, chars() uses unicode _points_ instead of full _characters_, so working with Grapheme Clusters is usually a safer bet in regards to UTF-8 compatibility
-    let ciphertext = String::from_utf8(bytes).unwrap();
+    
+    // Also, we clone the Vec<u8> as working with the reference does not work
+    let ciphertext = String::from_utf8(bytes.clone()).unwrap();
     for c in ciphertext.graphemes(true) {
         // Incredibly important but slightly cumbersome to make this all _lowercase_. Specifically, challenge 3 features a majority of upper case characters that are NOT rated
         match english_character_frequency.get(&c.to_ascii_lowercase().as_str()) {

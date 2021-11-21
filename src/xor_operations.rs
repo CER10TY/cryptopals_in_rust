@@ -28,10 +28,10 @@ pub fn score_single_byte_xor_cipher(bytes: &Vec<u8>) ->Vec<u8> {
 
     for byte in bytes.iter() {
         let new_plaintext: Vec<u8> = xor_single_character(&bytes, &byte);
-        let score: f32 = crate::score_plaintext(new_plaintext);
+        let score: f32 = crate::score_plaintext(&new_plaintext);
         if score > 0.0 {
             if score >= high_score {
-                best_scoring_vec = xor_single_character(&bytes, &byte);
+                best_scoring_vec = new_plaintext;
                 high_score = score;
             }
         }
