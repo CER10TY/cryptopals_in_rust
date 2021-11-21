@@ -25,8 +25,8 @@ pub fn score_plaintext(bytes: &Vec<u8>) -> f32 {
         ("r", 0.05987),
         ("d", 0.04253),
         ("l", 0.04025),
-        ("u", 0.02791), // Rip ETAOIN SHRDLU
         ("c", 0.02782),
+        ("u", 0.02758), // Rip ETAOIN SHRDLU
         ("m", 0.02406),
         ("w", 0.02360),
         ("f", 0.02228),
