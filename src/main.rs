@@ -46,8 +46,8 @@ pub fn score_plaintext(bytes: Vec<u8>) -> f32 {
     // However, chars() uses unicode _points_ instead of full _characters_, so working with Grapheme Clusters is usually a safer bet in regards to UTF-8 compatibility
     let ciphertext = String::from_utf8(bytes).unwrap();
     for c in ciphertext.graphemes(true) {
-        match english_character_frequency.get(c) {
-            Some(score) => plaintext_score += score,
+        match english_character_frequency.get(&c.to_ascii_lowercase().as_str()) {
+            Some(score) => plaintext_score += score * 100.0,
             None => {}
         }
     }

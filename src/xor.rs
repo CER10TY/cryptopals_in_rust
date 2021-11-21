@@ -22,16 +22,22 @@ pub fn xor_single_character(bytes: &Vec<u8>, key: &u8) -> Vec<u8> {
     xor_ed
 }
 
-pub fn score_single_byte_xor_cipher(bytes: &Vec<u8>) -> BTreeMap<Vec<u8>, f32> {
-    let mut score_map: BTreeMap<Vec<u8>, f32> = BTreeMap::new();
+pub fn score_single_byte_xor_cipher(bytes: &Vec<u8>) ->Vec<u8> {
+    let mut best_scoring_vec: Vec<u8> = Vec::new();
+    let mut high_score: f32 = 0.0;
 
     for byte in bytes.iter() {
         let new_plaintext: Vec<u8> = xor_single_character(&bytes, &byte);
         let score: f32 = crate::score_plaintext(new_plaintext);
-        score_map.insert(xor_single_character(&bytes, &byte), score);
+        if score > 0.0 {
+            if score >= high_score {
+                best_scoring_vec = xor_single_character(&bytes, &byte);
+                high_score = score;
+            }
+        }
     }
 
-    score_map
+    best_scoring_vec
 }
 
 #[cfg(test)]
@@ -52,25 +58,8 @@ mod tests {
     #[test]
     fn test_single_byte_xor_cipher() {
         let bytes: Vec<u8> = crate::hex_operations::hex_to_bytes("1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736");
-        let map: BTreeMap<Vec<u8>, f32> = score_single_byte_xor_cipher(&bytes);
+        let best_scoring_vec: Vec<u8> = score_single_byte_xor_cipher(&bytes);
 
-        let mut top_two: Vec<&Vec<u8>> = Vec::new();
-        let previous_score: f32 = 0.0;
-        for (vec, score) in map.iter() {
-            if *score == 0.0_f32 {
-                continue;
-            }
-
-            if *score >= previous_score {
-                top_two.insert(0, &vec);
-            } else {
-                top_two.push(&vec);
-            }
-        }
-        
-        assert_eq!(String::from_utf8_lossy(top_two[0]), "dHHLNI@\u{7}jd\u{0}T\u{7}KNLB\u{7}F\u{7}WHRIC\u{7}HA\u{7}EFDHI");
-
-        // Here, the shortcomings of "simple" character frequency scoring shine, as the most legible text ends up on second place because it uses '
-        assert_eq!(String::from_utf8_lossy(top_two[1]), "cOOKING\u{0}mc\u{7}S\u{0}LIKE\u{0}A\u{0}POUND\u{0}OF\u{0}BACON");
+        assert_eq!(String::from_utf8_lossy(&best_scoring_vec), "cOOKING\u{0}mc\u{7}S\u{0}LIKE\u{0}A\u{0}POUND\u{0}OF\u{0}BACON");
     }
 }
