@@ -46,14 +46,22 @@ pub fn score_plaintext(bytes: &Vec<u8>) -> f32 {
     // However, chars() uses unicode _points_ instead of full _characters_, so working with Grapheme Clusters is usually a safer bet in regards to UTF-8 compatibility
     
     // Also, we clone the Vec<u8> as working with the reference does not work
-    let ciphertext = String::from_utf8(bytes.clone()).unwrap();
-    for c in ciphertext.graphemes(true) {
-        // Incredibly important but slightly cumbersome to make this all _lowercase_. Specifically, challenge 3 features a majority of upper case characters that are NOT rated
-        match english_character_frequency.get(&c.to_ascii_lowercase().as_str()) {
-            Some(score) => plaintext_score += score,
-            None => {}
-        }
-    }
+    let ciphertext = String::from_utf8(bytes.clone());
+
+    // .unwrap() is unsafe to call as not all strings given to this function are actually valid UTF-8
+    match ciphertext {
+        Ok(v) => {
+            for c in v.graphemes(true) {
+                // Incredibly important but slightly cumbersome to make this all _lowercase_. Specifically, challenge 3 features a majority of upper case characters that are NOT rated
+                match english_character_frequency.get(&c.to_ascii_lowercase().as_str()) {
+                    Some(score) => plaintext_score += score,
+                    None => {}
+                }
+            }
+        
+        },
+        Err(_) => {}
+    };
 
     plaintext_score
 }

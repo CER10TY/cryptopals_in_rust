@@ -33,6 +33,7 @@ pub fn score_single_byte_xor_cipher(bytes: &Vec<u8>) ->Vec<u8> {
             if score >= high_score {
                 best_scoring_vec = new_plaintext;
                 high_score = score;
+                //println!("{:?}, Score: {:?}", String::from_utf8_lossy(&best_scoring_vec), high_score);
             }
         }
     }
@@ -43,6 +44,9 @@ pub fn score_single_byte_xor_cipher(bytes: &Vec<u8>) ->Vec<u8> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::fs::File;
+    use std::io::{BufRead, BufReader};
+
 
     #[test]
     fn test_fixed_xor() {
@@ -63,5 +67,41 @@ mod tests {
         // The "valid" string was found by outputting a list of all strings with a score of > 0.0, and then manually looking at the most legible string
         // So really, this is just a way to encapsulate Challenge 3 and make it look good, but in a real scenario this would be manual work
         assert_eq!(String::from_utf8_lossy(&best_scoring_vec), "cOOKING\u{0}mc\u{7}S\u{0}LIKE\u{0}A\u{0}POUND\u{0}OF\u{0}BACON");
+    }
+
+    #[test]
+    fn detect_single_byte_xor_cipher() {
+        let file = File::open("challenge-4-strings.txt").unwrap();
+        let reader = BufReader::new(file);
+
+        let mut best_scorers: Vec<Vec<u8>> = Vec::new();
+
+        // Each string has been single-byte XORed itself, so we get the best scorer out of each of them
+        for (_, line) in reader.lines().enumerate() {
+            let line = line.unwrap();
+
+            let bytes: Vec<u8> = crate::hex_operations::hex_to_bytes(line.as_str());
+            let best: Vec<u8> = score_single_byte_xor_cipher(&bytes);
+            best_scorers.push(best);
+        }
+
+        // Retain only elements with any bytes in the first place
+        best_scorers.retain(|x| x.len() > 0);
+
+        // Now we've got to go through each element and rate the plain text
+        let mut best_score: &Vec<u8> = &Vec::new();
+        let mut high_score: f32 = 0.0;
+        for scorer in best_scorers.iter() {
+            let score = crate::score_plaintext(&scorer);
+            if score > 0.0 {
+                if score > high_score {
+                    best_score = scorer;
+                    high_score = score;
+                }
+            }
+        }
+
+        // And finally, the best looking string gets put into assert_eq to make the test look good
+        assert_eq!(String::from_utf8_lossy(&best_score), "nOW\u{0}THAT\u{0}THE\u{0}PARTY\u{0}IS\u{0}JUMPING*");
     }
 }
