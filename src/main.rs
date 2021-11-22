@@ -65,3 +65,27 @@ pub fn score_plaintext(bytes: &Vec<u8>) -> f32 {
 
     plaintext_score
 }
+
+// The Hamming Distance is the number of differing _bits_, not bytes!, between two strings
+// This only works with equal-length Vectors
+pub fn calculate_hamming_distance(a: &Vec<u8>, b: &Vec<u8>) -> u64 {
+    // Looks complicated, but it's not really
+    // First, we make an iterator out of a, zipping it up to b. This creates (a, tuple), where a[0] is the first element, and b[0] the second
+    // Fold() is where magic happens. It iterates through the whole tuple just created and returns a single value
+    // 0 is the initial value, a holds the _result_ of the previous rounds (so 0 initially), and (b, c) are the respective tuple values
+    // And finally, we just XOR the actual tuple values and count the numbers of 1 bits, indicating the Hamming distance
+    a.iter().zip(b).fold(0, |a, (b, c)| a + (*b ^ *c).count_ones() as u64)
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_calculate_hamming_distance() {
+        let a: Vec<u8> = String::as_bytes(&"this is a test".to_string()).to_vec();
+        let b: Vec<u8> = String::as_bytes(&"wokka wokka!!!".to_string()).to_vec();
+
+        let distance: u64 = crate::calculate_hamming_distance(&a, &b);
+
+        assert_eq!(distance, 37);
+    }
+}
