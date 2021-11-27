@@ -1,5 +1,6 @@
 use hex::FromHex;
 use base64::encode;
+use base64::decode;
 
 #[allow(dead_code)]
 pub fn hex_to_bytes(hex: &str) -> Vec<u8> {
@@ -7,12 +8,17 @@ pub fn hex_to_bytes(hex: &str) -> Vec<u8> {
 }
 
 #[allow(dead_code)]
-pub fn bytes_to_base64(bytes: &Vec<u8>) -> String {
+pub fn bytes_to_base64(bytes: &[u8]) -> String {
     encode(bytes)
 }
 
 #[allow(dead_code)]
-pub fn bytes_to_hex(bytes: &Vec<u8>) -> String {
+pub fn base64_to_bytes(b64: &str) -> Vec<u8> {
+    decode(b64).unwrap()
+}
+
+#[allow(dead_code)]
+pub fn bytes_to_hex(bytes: &[u8]) -> String {
     hex::encode(bytes)
 }
 

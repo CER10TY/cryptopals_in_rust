@@ -1,6 +1,6 @@
 // This is the fixed XOR function, where two equal-length buffers are XORed against each other char-by-char to return a new byte combination
 #[allow(dead_code)]
-pub fn xor_each(byte_one: &Vec<u8>, byte_two: &Vec<u8>) -> Vec<u8> {
+pub fn xor_each(byte_one: &[u8], byte_two: &[u8]) -> Vec<u8> {
     let mut xor_ed: Vec<u8> = Vec::new();
 
     for (index, _) in byte_one.iter().enumerate() {
@@ -12,7 +12,7 @@ pub fn xor_each(byte_one: &Vec<u8>, byte_two: &Vec<u8>) -> Vec<u8> {
 
 // Here, instead, we use a single character out of the Vec<u8> to act as the key for the bit-wise XOR operation
 #[allow(dead_code)]
-pub fn xor_single_character(bytes: &Vec<u8>, key: &u8) -> Vec<u8> {
+pub fn xor_single_character(bytes: &[u8], key: &u8) -> Vec<u8> {
     let mut xor_ed: Vec<u8> = Vec::new();
 
     for (index, _) in bytes.iter().enumerate() {
@@ -23,7 +23,7 @@ pub fn xor_single_character(bytes: &Vec<u8>, key: &u8) -> Vec<u8> {
 }
 
 #[allow(dead_code)]
-pub fn score_single_byte_xor_cipher(bytes: &Vec<u8>) -> Vec<u8> {
+pub fn score_single_byte_xor_cipher(bytes: &[u8]) -> Vec<u8> {
     let mut best_scoring_vec: Vec<u8> = Vec::new();
     let mut high_score: f32 = 0.0;
 
@@ -43,7 +43,7 @@ pub fn score_single_byte_xor_cipher(bytes: &Vec<u8>) -> Vec<u8> {
 }
 
 #[allow(dead_code)]
-pub fn repeating_key_xor(bytes: &Vec<u8>, key: &Vec<u8>) -> Vec<u8> {
+pub fn repeating_key_xor(bytes: &[u8], key: &[u8]) -> Vec<u8> {
     let mut encrypted: Vec<u8> = Vec::new();
 
     let key_length: usize = key.len();
@@ -55,6 +55,14 @@ pub fn repeating_key_xor(bytes: &Vec<u8>, key: &Vec<u8>) -> Vec<u8> {
     }
 
     encrypted
+}
+
+#[allow(dead_code)]
+pub fn break_repeating_key_xor(min_key_size: i32, max_key_size: i32, byteset: &[u8]) {
+    // chunks(2) splits up the _entire_ byteset into chunks of 2 u8. take(2) then takes 2 of these chunks and, together with collect(), returns it as &[u8]
+    let chunks: Vec<&[u8]> = byteset.chunks(2).take(2).collect();
+    println!("{:?}", byteset);
+    println!("{:?}", chunks);
 }
 
 #[cfg(test)]

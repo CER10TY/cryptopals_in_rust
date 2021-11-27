@@ -4,10 +4,10 @@ use std::collections::BTreeMap;
 use unicode_segmentation::UnicodeSegmentation;
 
 fn main() {
-    println!("Hello World!");
+    crate::xor_operations::break_repeating_key_xor(2, 4, &[20, 40, 55, 22, 12, 16, 21, 78])
 }
 
-pub fn score_plaintext(bytes: &Vec<u8>) -> f32 {
+pub fn score_plaintext(bytes: &[u8]) -> f32 {
     let mut plaintext_score: f32 = 0.0;
 
     // Reference: https://www3.nd.edu/~busiforc/handouts/cryptography/Letter%20Frequencies.html
@@ -46,7 +46,7 @@ pub fn score_plaintext(bytes: &Vec<u8>) -> f32 {
     // However, chars() uses unicode _points_ instead of full _characters_, so working with Grapheme Clusters is usually a safer bet in regards to UTF-8 compatibility
     
     // Also, we clone the Vec<u8> as working with the reference does not work
-    let ciphertext = String::from_utf8(bytes.clone());
+    let ciphertext = String::from_utf8(bytes.to_owned());
 
     // .unwrap() is unsafe to call as not all strings given to this function are actually valid UTF-8
     match ciphertext {
@@ -70,7 +70,7 @@ pub fn score_plaintext(bytes: &Vec<u8>) -> f32 {
 // This only works with equal-length Vectors
 pub fn calculate_hamming_distance(a: &Vec<u8>, b: &Vec<u8>) -> u64 {
     // Looks complicated, but it's not really
-    // First, we make an iterator out of a, zipping it up to b. This creates (a, tuple), where a[0] is the first element, and b[0] the second
+    // First, we make an iterator out of a, zipping it up to b. This creates (a, tuple), where a[0] is the first element, and b[0] the second and so on
     // Fold() is where magic happens. It iterates through the whole tuple just created and returns a single value
     // 0 is the initial value, a holds the _result_ of the previous rounds (so 0 initially), and (b, c) are the respective tuple values
     // And finally, we just XOR the actual tuple values and count the numbers of 1 bits, indicating the Hamming distance
